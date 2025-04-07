@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronômetro</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #B0C4DE; /* Fundo azul-acizentado */
+            color: #ffffff;
+        }
+        .cronometro {
+            text-align: center;
+            background: #444c56;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 5px solid gold; /* Arredores em dourado */
+        }
+        .display {
+            font-size: 4em;
+            margin-bottom: 20px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #FF4500, #FF8C00, #FFD700); /* Degradê de cores quentes */
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .buttons button {
+            font-size: 1.2em;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .buttons button:hover {
+            background: #61dafb;
+            color: #282c34;
+        }
+        #start {
+            background: #28a745;
+            color: #ffffff;
+        }
+        #stop {
+            background: #dc3545;
+            color: #ffffff;
+        }
+        #reset {
+            background: #ffc107;
+            color: #282c34;
+        }
+    </style>
+</head>
+<body>
+    <div class="cronometro">
+        <div class="display" id="display">00:00:00:00</div>
+        <div class="buttons">
+            <button id="start">Iniciar</button>
+            <button id="stop">Parar</button>
+            <button id="reset">Resetar</button>
+        </div>
+    </div>
+
+    <script>
+        let startTime;
+        let updatedTime;
+        let difference;
+        let interval;
+        let running = false;
+
+        const display = document.getElementById('display');
+        const startButton = document.getElementById('start');
+        const stopButton = document.getElementById('stop');
+        const resetButton = document.getElementById('reset');
+
+        function startTimer() {
+            if (!running) {
+                startTime = new Date().getTime() - (difference || 0);
+                interval = setInterval(updateTimer, 1000);
+                running = true;
+            }
+        }
+
+        function stopTimer() {
+            if (running) {
+                clearInterval(interval);
+                difference = new Date().getTime() - startTime;
+                running = false;
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(interval);
+            display.textContent = '00:00:00:00';
+            running = false;
+            difference = 0;
+        }
+
+        function updateTimer() {
+            updatedTime = new Date().getTime();
+            difference = updatedTime - startTime;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            display.textContent = 
+                (days < 10 ? '0' : '') + days + ':' + 
+                (hours < 10 ? '0' : '') + hours + ':' + 
+                (minutes < 10 ? '0' : '') + minutes + ':' + 
+                (seconds < 10 ? '0' : '') + seconds;
+        }
+
+        startButton.addEventListener('click', startTimer);
+        stopButton.addEventListener('click', stopTimer);
+        resetButton.addEventListener('click', resetTimer);
+    </script>
+</body>
+</html>
